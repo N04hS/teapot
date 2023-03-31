@@ -8,7 +8,6 @@ import at.fhv.sysarch.lab1.pipeline.filters.ResizeFilter;
 import at.fhv.sysarch.lab1.pipeline.filters.Sink;
 import at.fhv.sysarch.lab1.pipeline.filters.Source;
 import javafx.animation.AnimationTimer;
-import javafx.scene.paint.Color;
 
 public class PullPipelineFactory {
     public static AnimationTimer createPipeline(PipelineData pd) {
@@ -16,8 +15,8 @@ public class PullPipelineFactory {
         Sink sink = new Sink(pd.getGraphicsContext());
         ResizeFilter filter = new ResizeFilter();
 
-        Pipe<Face> connectSourceResize = new Pipe<Face>();
-        Pipe<Face> connectResizeSink = new Pipe<Face>();
+        Pipe<Face> connectSourceResize = new Pipe<>();
+        Pipe<Face> connectResizeSink = new Pipe<>();
 
         source.setSuccessor(connectSourceResize);
         connectSourceResize.setOutgoing(filter);
@@ -50,6 +49,7 @@ public class PullPipelineFactory {
         // returning an animation renderer which handles clearing of the
         // viewport and computation of the praction
         return new AnimationRenderer(pd) {
+            private int pos = 0;
             // TODO rotation variable goes in here
 
             /** This method is called for every frame from the JavaFX Animation
@@ -60,6 +60,10 @@ public class PullPipelineFactory {
             @Override
             protected void render(float fraction, Model model) {
                 pd.getGraphicsContext().setStroke(pd.getModelColor());
+
+                /* code for checking if stuff still moves */
+                pd.getGraphicsContext().strokeLine(pos, pos, 100+pos, 100+pos);
+                pos++;
 
                 source.write(model);
                 /*
