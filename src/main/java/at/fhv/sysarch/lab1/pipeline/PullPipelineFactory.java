@@ -1,11 +1,29 @@
 package at.fhv.sysarch.lab1.pipeline;
 
 import at.fhv.sysarch.lab1.animation.AnimationRenderer;
+import at.fhv.sysarch.lab1.obj.Face;
 import at.fhv.sysarch.lab1.obj.Model;
+import at.fhv.sysarch.lab1.pipeline.filters.Pipe;
+import at.fhv.sysarch.lab1.pipeline.filters.ResizeFilter;
+import at.fhv.sysarch.lab1.pipeline.filters.Sink;
+import at.fhv.sysarch.lab1.pipeline.filters.Source;
 import javafx.animation.AnimationTimer;
+import javafx.scene.paint.Color;
 
 public class PullPipelineFactory {
     public static AnimationTimer createPipeline(PipelineData pd) {
+        Source source = new Source();
+        Sink sink = new Sink(pd.getGraphicsContext());
+        ResizeFilter filter = new ResizeFilter();
+
+        Pipe<Face> connectSourceResize = new Pipe<Face>();
+        Pipe<Face> connectResizeSink = new Pipe<Face>();
+
+        source.setSuccessor(connectSourceResize);
+        connectSourceResize.setOutgoing(filter);
+        filter.setSuccessor(connectResizeSink);
+        connectResizeSink.setOutgoing(sink);
+
         // TODO: pull from the source (model)
 
         // TODO 1. perform model-view transformation from model to VIEW SPACE coordinates
@@ -41,6 +59,16 @@ public class PullPipelineFactory {
              */
             @Override
             protected void render(float fraction, Model model) {
+                pd.getGraphicsContext().setStroke(pd.getModelColor());
+
+                source.write(model);
+                /*
+                model.getFaces().forEach(f -> {
+                    pd.getGraphicsContext().strokeLine(f.getV1().getX()*100, f.getV1().getY()*100, f.getV2().getX()*100, f.getV2().getY()*100);
+                    pd.getGraphicsContext().strokeLine(f.getV1().getX()*100, f.getV1().getY()*100, f.getV3().getX()*100, f.getV3().getY()*100);
+                    pd.getGraphicsContext().strokeLine(f.getV2().getX()*100, f.getV2().getY()*100, f.getV2().getX()*100, f.getV3().getY()*100);
+                });
+                */
                 // TODO compute rotation in radians
 
                 // TODO create new model rotation matrix using pd.getModelRotAxis and Matrices.rotate
