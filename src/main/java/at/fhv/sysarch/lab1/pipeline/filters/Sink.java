@@ -14,7 +14,7 @@ public class Sink implements IFilter<Face> {
 		// NOT IMPLEMENTED
 	}
 
-	public void write(Face f) {
+	public void write(Face f, Container c) {
 		context.strokeLine(f.getV1().getX(), f.getV1().getY(), f.getV2().getX(), f.getV2().getY());
 		context.strokeLine(f.getV1().getX(), f.getV1().getY(), f.getV3().getX(), f.getV3().getY());
 		context.strokeLine(f.getV2().getX(), f.getV2().getY(), f.getV3().getX(), f.getV3().getY());

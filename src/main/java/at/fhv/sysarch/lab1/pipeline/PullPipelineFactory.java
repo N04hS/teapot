@@ -3,25 +3,27 @@ package at.fhv.sysarch.lab1.pipeline;
 import at.fhv.sysarch.lab1.animation.AnimationRenderer;
 import at.fhv.sysarch.lab1.obj.Face;
 import at.fhv.sysarch.lab1.obj.Model;
-import at.fhv.sysarch.lab1.pipeline.filters.Pipe;
-import at.fhv.sysarch.lab1.pipeline.filters.ResizeFilter;
-import at.fhv.sysarch.lab1.pipeline.filters.Sink;
-import at.fhv.sysarch.lab1.pipeline.filters.Source;
+import at.fhv.sysarch.lab1.pipeline.filters.*;
+import com.hackoeur.jglm.Matrices;
 import javafx.animation.AnimationTimer;
 
 public class PullPipelineFactory {
     public static AnimationTimer createPipeline(PipelineData pd) {
         Source source = new Source();
         Sink sink = new Sink(pd.getGraphicsContext());
-        ResizeFilter filter = new ResizeFilter();
+        ResizeFilter resize = new ResizeFilter();
+        RotationFilter rotate = new RotationFilter();
 
         Pipe<Face> connectSourceResize = new Pipe<>();
-        Pipe<Face> connectResizeSink = new Pipe<>();
+        Pipe<Face> connectResizeRotate = new Pipe<>();
+        Pipe<Face> connectRotateSink = new Pipe<>();
 
         source.setSuccessor(connectSourceResize);
-        connectSourceResize.setOutgoing(filter);
-        filter.setSuccessor(connectResizeSink);
-        connectResizeSink.setOutgoing(sink);
+        connectSourceResize.setOutgoing(resize);
+        resize.setSuccessor(connectResizeRotate);
+        connectResizeRotate.setOutgoing(rotate);
+        rotate.setSuccessor(connectRotateSink);
+        connectRotateSink.setOutgoing(sink);
 
         // TODO: pull from the source (model)
 
@@ -51,6 +53,7 @@ public class PullPipelineFactory {
         return new AnimationRenderer(pd) {
             private int pos = 0;
             // TODO rotation variable goes in here
+            float elapsedTime = 0;
 
             /** This method is called for every frame from the JavaFX Animation
              * system (using an AnimationTimer, see AnimationRenderer). 
@@ -62,10 +65,13 @@ public class PullPipelineFactory {
                 pd.getGraphicsContext().setStroke(pd.getModelColor());
 
                 /* code for checking if stuff still moves */
-                pd.getGraphicsContext().strokeLine(pos, pos, 100+pos, 100+pos);
-                pos++;
+//                pd.getGraphicsContext().strokeLine(pos, pos, 100+pos, 100+pos);
+//                pos++;
 
-                source.write(model);
+                Container c = new Container();
+                float phi = (float) ((Math.PI*2*(elapsedTime+=fraction))/10);
+                c.rotMat = Matrices.rotate(phi, pd.getModelRotAxis());
+                source.write(model, c);
                 /*
                 model.getFaces().forEach(f -> {
                     pd.getGraphicsContext().strokeLine(f.getV1().getX()*100, f.getV1().getY()*100, f.getV2().getX()*100, f.getV2().getY()*100);

@@ -9,8 +9,8 @@ public class Source implements IFilter<Model> {
 		this.successor = pipe;
 	}
 
-	public void write(Model model) {
+	public void write(Model model, Container c) {
 		// TODO: call next filter
-		model.getFaces().forEach(f -> this.successor.write(f));
+		model.getFaces().forEach(f -> this.successor.write(f, c));
 	}
 }

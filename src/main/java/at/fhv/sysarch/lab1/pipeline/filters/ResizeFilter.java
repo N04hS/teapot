@@ -9,8 +9,8 @@ public class ResizeFilter implements IFilter<Face> {
 		this.successor = pipe;
 	}
 
-	public void write(Face f) {
+	public void write(Face f, Container c) {
 		Face newFace = new Face(f.getV1().multiply(100), f.getV2().multiply(100), f.getV3().multiply(100), f);
-		this.successor.write(newFace);
+		this.successor.write(newFace, c);
 	}
 }
