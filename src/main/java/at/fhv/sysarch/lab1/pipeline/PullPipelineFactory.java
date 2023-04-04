@@ -13,17 +13,21 @@ public class PullPipelineFactory {
         Sink sink = new Sink(pd.getGraphicsContext());
         ResizeFilter resize = new ResizeFilter();
         RotationFilter rotate = new RotationFilter();
+        ViewTransformFilter view = new ViewTransformFilter();
 
         Pipe<Face> connectSourceResize = new Pipe<>();
         Pipe<Face> connectResizeRotate = new Pipe<>();
-        Pipe<Face> connectRotateSink = new Pipe<>();
+        Pipe<Face> connectRotateView = new Pipe<>();
+        Pipe<Face> connectViewSink = new Pipe<>();
 
         source.setSuccessor(connectSourceResize);
         connectSourceResize.setOutgoing(resize);
         resize.setSuccessor(connectResizeRotate);
         connectResizeRotate.setOutgoing(rotate);
-        rotate.setSuccessor(connectRotateSink);
-        connectRotateSink.setOutgoing(sink);
+        rotate.setSuccessor(connectRotateView);
+        connectRotateView.setOutgoing(view);
+        view.setSuccessor(connectViewSink);
+        connectViewSink.setOutgoing(sink);
 
         // TODO: pull from the source (model)
 
@@ -71,6 +75,8 @@ public class PullPipelineFactory {
                 Container c = new Container();
                 float phi = (float) ((Math.PI*2*(elapsedTime+=fraction))/10);
                 c.rotMat = Matrices.rotate(phi, pd.getModelRotAxis());
+                c.viewMat = pd.getViewTransform();
+
                 source.write(model, c);
                 /*
                 model.getFaces().forEach(f -> {

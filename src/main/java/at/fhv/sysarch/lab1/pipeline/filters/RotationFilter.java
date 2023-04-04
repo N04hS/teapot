@@ -8,7 +8,6 @@ public class RotationFilter implements IFilter<Face> {
 
 	public void setSuccessor(Pipe pipe) { this.successor = pipe; }
 
-	@Override
 	public void write(Face f, Container c) {
 		Mat4 rM = c.rotMat;
 		Face newFace = new Face(rM.multiply(f.getV1()), rM.multiply(f.getV2()), rM.multiply(f.getV3()), f);
