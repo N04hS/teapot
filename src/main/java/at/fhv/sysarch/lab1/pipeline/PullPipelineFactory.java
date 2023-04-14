@@ -11,9 +11,9 @@ public class PullPipelineFactory {
     public static AnimationTimer createPipeline(PipelineData pd) {
         Source source = new Source();
         Sink sink = new Sink(pd.getGraphicsContext());
-        ResizeFilter resize = new ResizeFilter();
-        RotationFilter rotate = new RotationFilter();
-        ViewTransformFilter view = new ViewTransformFilter();
+        IFilter<Face> resize = new ResizeFilter();
+        IFilter<Face> rotate = new RotationFilter();
+        IFilter<Face> view = new ViewTransformFilter();
 
         Pipe<Face> connectSourceResize = new Pipe<>();
         Pipe<Face> connectResizeRotate = new Pipe<>();
@@ -68,23 +68,12 @@ public class PullPipelineFactory {
             protected void render(float fraction, Model model) {
                 pd.getGraphicsContext().setStroke(pd.getModelColor());
 
-                /* code for checking if stuff still moves */
-//                pd.getGraphicsContext().strokeLine(pos, pos, 100+pos, 100+pos);
-//                pos++;
-
                 Container c = new Container();
                 float phi = (float) ((Math.PI*2*(elapsedTime+=fraction))/10);
                 c.rotMat = Matrices.rotate(phi, pd.getModelRotAxis());
                 c.viewMat = pd.getViewTransform();
 
                 source.write(model, c);
-                /*
-                model.getFaces().forEach(f -> {
-                    pd.getGraphicsContext().strokeLine(f.getV1().getX()*100, f.getV1().getY()*100, f.getV2().getX()*100, f.getV2().getY()*100);
-                    pd.getGraphicsContext().strokeLine(f.getV1().getX()*100, f.getV1().getY()*100, f.getV3().getX()*100, f.getV3().getY()*100);
-                    pd.getGraphicsContext().strokeLine(f.getV2().getX()*100, f.getV2().getY()*100, f.getV2().getX()*100, f.getV3().getY()*100);
-                });
-                */
                 // TODO compute rotation in radians
 
                 // TODO create new model rotation matrix using pd.getModelRotAxis and Matrices.rotate
