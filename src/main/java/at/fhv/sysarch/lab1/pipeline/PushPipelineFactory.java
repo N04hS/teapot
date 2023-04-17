@@ -1,11 +1,53 @@
 package at.fhv.sysarch.lab1.pipeline;
 
 import at.fhv.sysarch.lab1.animation.AnimationRenderer;
+import at.fhv.sysarch.lab1.obj.Face;
 import at.fhv.sysarch.lab1.obj.Model;
+import at.fhv.sysarch.lab1.pipeline.filters.*;
+import com.hackoeur.jglm.Matrices;
 import javafx.animation.AnimationTimer;
 
 public class PushPipelineFactory {
     public static AnimationTimer createPipeline(PipelineData pd) {
+        Source source = new Source();
+        IFilter<Face> resize = new ResizeFilter();
+        IFilter<Face> backFaceCulling = new BackfaceCullingFilter(pd.getViewingEye());
+        IFilter<Face> rotate = new RotationFilter();
+        IFilter<Face> depthSort = new DepthSortFilter();
+        IFilter<Face> view = new ViewTransformFilter(pd.getProjTransform());
+        IFilter<Face> move = new MoveFilter(pd.getViewWidth(), pd.getViewHeight());
+        Sink sink = new Sink(pd);
+
+        Pipe<Face> connectSourceResize = new Pipe<>();
+        Pipe<Face> connectResizeRotate = new Pipe<>();
+        Pipe<Face> connectBackFaceCulling = new Pipe<>();
+        Pipe<Face> connectDepthSort = new Pipe<>();
+        Pipe<Face> connectRotateView = new Pipe<>();
+        Pipe<Face> connectViewMove = new Pipe<>();
+        Pipe<Face> connectMoveSink = new Pipe<>();
+
+        source.setSuccessor(connectSourceResize);
+
+        connectSourceResize.setOutgoing(resize);
+        resize.setSuccessor(connectResizeRotate);
+
+        connectResizeRotate.setOutgoing(rotate);
+        rotate.setSuccessor(connectBackFaceCulling);
+
+        connectBackFaceCulling.setOutgoing(backFaceCulling);
+        backFaceCulling.setSuccessor(connectDepthSort);
+
+        connectDepthSort.setOutgoing(depthSort);
+        depthSort.setSuccessor(connectRotateView);
+
+        connectRotateView.setOutgoing(view);
+        view.setSuccessor(connectViewMove);
+
+        connectViewMove.setOutgoing(move);
+        move.setSuccessor(connectMoveSink);
+
+        connectMoveSink.setOutgoing(sink);
+
         // TODO: push from the source (model)
 
         // TODO 1. perform model-view transformation from model to VIEW SPACE coordinates
@@ -32,7 +74,9 @@ public class PushPipelineFactory {
         // returning an animation renderer which handles clearing of the
         // viewport and computation of the praction
         return new AnimationRenderer(pd) {
+            private int pos = 0;
             // TODO rotation variable goes in here
+            float elapsedTime = 0;
 
             /** This method is called for every frame from the JavaFX Animation
              * system (using an AnimationTimer, see AnimationRenderer). 
@@ -41,7 +85,15 @@ public class PushPipelineFactory {
              */
             @Override
             protected void render(float fraction, Model model) {
+                pd.getGraphicsContext().setStroke(pd.getModelColor());
+                pd.getGraphicsContext().setFill(pd.getModelColor());
 
+                Container c = new Container();
+                float phi = (float) ((Math.PI*2*(elapsedTime+=fraction))/10);
+                c.rotMat = Matrices.rotate(phi, pd.getModelRotAxis());
+                c.viewMat = pd.getViewTransform();
+
+                source.write(model, c);
                 // TODO compute rotation in radians
 
                 // TODO create new model rotation matrix using pd.modelRotAxis
