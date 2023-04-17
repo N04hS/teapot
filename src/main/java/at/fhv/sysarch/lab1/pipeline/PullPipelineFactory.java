@@ -16,6 +16,7 @@ public class PullPipelineFactory {
         IFilter<Face> rotate = new RotationFilter();
         IFilter<Face> depthSort = new DepthSortFilter();
         IFilter<Face> view = new ViewTransformFilter(pd.getProjTransform());
+        IFilter<Face> move = new MoveFilter(pd.getViewWidth(), pd.getViewHeight());
         Sink sink = new Sink(pd);
 
         Pipe<Face> connectSourceResize = new Pipe<>();
@@ -23,7 +24,8 @@ public class PullPipelineFactory {
         Pipe<Face> connectBackFaceCulling = new Pipe<>();
         Pipe<Face> connectDepthSort = new Pipe<>();
         Pipe<Face> connectRotateView = new Pipe<>();
-        Pipe<Face> connectViewSink = new Pipe<>();
+        Pipe<Face> connectViewMove = new Pipe<>();
+        Pipe<Face> connectMoveSink = new Pipe<>();
 
         source.setSuccessor(connectSourceResize);
 
@@ -40,9 +42,12 @@ public class PullPipelineFactory {
         depthSort.setSuccessor(connectRotateView);
 
         connectRotateView.setOutgoing(view);
-        view.setSuccessor(connectViewSink);
+        view.setSuccessor(connectViewMove);
 
-        connectViewSink.setOutgoing(sink);
+        connectViewMove.setOutgoing(move);
+        move.setSuccessor(connectMoveSink);
+
+        connectMoveSink.setOutgoing(sink);
 
         // TODO: pull from the source (model)
 
