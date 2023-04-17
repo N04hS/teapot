@@ -4,29 +4,44 @@ import at.fhv.sysarch.lab1.animation.AnimationRenderer;
 import at.fhv.sysarch.lab1.obj.Face;
 import at.fhv.sysarch.lab1.obj.Model;
 import at.fhv.sysarch.lab1.pipeline.filters.*;
+import at.fhv.sysarch.lab1.rendering.RenderingMode;
 import com.hackoeur.jglm.Matrices;
 import javafx.animation.AnimationTimer;
 
 public class PullPipelineFactory {
     public static AnimationTimer createPipeline(PipelineData pd) {
         Source source = new Source();
-        Sink sink = new Sink(pd.getGraphicsContext());
         IFilter<Face> resize = new ResizeFilter();
+        IFilter<Face> backFaceCulling = new BackfaceCullingFilter(pd.getViewingEye());
         IFilter<Face> rotate = new RotationFilter();
-        IFilter<Face> view = new ViewTransformFilter();
+        IFilter<Face> depthSort = new DepthSortFilter();
+        IFilter<Face> view = new ViewTransformFilter(pd.getProjTransform());
+        Sink sink = new Sink(pd);
 
         Pipe<Face> connectSourceResize = new Pipe<>();
         Pipe<Face> connectResizeRotate = new Pipe<>();
+        Pipe<Face> connectBackFaceCulling = new Pipe<>();
+        Pipe<Face> connectDepthSort = new Pipe<>();
         Pipe<Face> connectRotateView = new Pipe<>();
         Pipe<Face> connectViewSink = new Pipe<>();
 
         source.setSuccessor(connectSourceResize);
+
         connectSourceResize.setOutgoing(resize);
         resize.setSuccessor(connectResizeRotate);
+
         connectResizeRotate.setOutgoing(rotate);
-        rotate.setSuccessor(connectRotateView);
+        rotate.setSuccessor(connectBackFaceCulling);
+
+        connectBackFaceCulling.setOutgoing(backFaceCulling);
+        backFaceCulling.setSuccessor(connectDepthSort);
+
+        connectDepthSort.setOutgoing(depthSort);
+        depthSort.setSuccessor(connectRotateView);
+
         connectRotateView.setOutgoing(view);
         view.setSuccessor(connectViewSink);
+
         connectViewSink.setOutgoing(sink);
 
         // TODO: pull from the source (model)
@@ -67,6 +82,7 @@ public class PullPipelineFactory {
             @Override
             protected void render(float fraction, Model model) {
                 pd.getGraphicsContext().setStroke(pd.getModelColor());
+                pd.getGraphicsContext().setFill(pd.getModelColor());
 
                 Container c = new Container();
                 float phi = (float) ((Math.PI*2*(elapsedTime+=fraction))/10);

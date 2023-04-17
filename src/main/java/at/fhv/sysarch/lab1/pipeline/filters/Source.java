@@ -12,5 +12,6 @@ public class Source implements IFilter<Model> {
 	public void write(Model model, Container c) {
 		// TODO: call next filter
 		model.getFaces().forEach(f -> this.successor.write(f, c));
+		this.successor.write(null, c); /*separate each render call*/
 	}
 }
