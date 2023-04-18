@@ -10,8 +10,8 @@ public class MoveFilter implements IFilter<Face> {
     private final int deltaY;
 
     public MoveFilter(int viewWidth, int viewHeight) {
-        this.deltaX = viewWidth / 3;
-        this.deltaY = viewHeight / 3;
+        this.deltaX = (int) (viewWidth / 1.9);
+        this.deltaY = (int) (viewHeight / 1.25);
     }
 
     public void setSuccessor(Pipe pipe) { this.successor = pipe; }
