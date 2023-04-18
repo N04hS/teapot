@@ -16,6 +16,7 @@ public class PushPipelineFactory {
         IFilter<Face> depthSort = new DepthSortFilter();
         IFilter<Face> view = new ViewTransformFilter(pd.getProjTransform());
         IFilter<Face> move = new MoveFilter(pd.getViewWidth(), pd.getViewHeight());
+        IFilter<Face> angle = new AngleTransformFilter();
         Sink sink = new Sink(pd);
 
         Pipe<Face> connectSourceResize = new Pipe<>();
@@ -23,7 +24,8 @@ public class PushPipelineFactory {
         Pipe<Face> connectBackFaceCulling = new Pipe<>();
         Pipe<Face> connectDepthSort = new Pipe<>();
         Pipe<Face> connectRotateView = new Pipe<>();
-        Pipe<Face> connectViewMove = new Pipe<>();
+        Pipe<Face> connectViewAngle = new Pipe<>();
+        Pipe<Face> connectAngleMove = new Pipe<>();
         Pipe<Face> connectMoveSink = new Pipe<>();
 
         source.setSuccessor(connectSourceResize);
@@ -41,9 +43,12 @@ public class PushPipelineFactory {
         depthSort.setSuccessor(connectRotateView);
 
         connectRotateView.setOutgoing(view);
-        view.setSuccessor(connectViewMove);
+        view.setSuccessor(connectViewAngle);
 
-        connectViewMove.setOutgoing(move);
+        connectViewAngle.setOutgoing(angle);
+        angle.setSuccessor(connectAngleMove);
+
+        connectAngleMove.setOutgoing(move);
         move.setSuccessor(connectMoveSink);
 
         connectMoveSink.setOutgoing(sink);
