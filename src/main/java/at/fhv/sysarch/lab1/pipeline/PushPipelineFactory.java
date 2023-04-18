@@ -95,7 +95,7 @@ public class PushPipelineFactory {
 
                 Container c = new Container();
                 float phi = (float) ((Math.PI*2*(elapsedTime+=fraction))/10);
-                c.rotMat = Matrices.rotate(phi, pd.getModelRotAxis());
+                c.rotMat = Matrices.rotate(-phi, pd.getModelRotAxis());
                 c.viewMat = pd.getViewTransform();
 
                 source.write(model, c);
