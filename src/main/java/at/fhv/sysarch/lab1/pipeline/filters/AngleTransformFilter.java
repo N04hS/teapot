@@ -13,20 +13,16 @@ public class AngleTransformFilter implements IFilter<Face> {
 	public void setForerunner(Pipe pipe) { this.forerunner = pipe; }
 
 	public void write(Face f, Container c) {
-		if (f == null) successor.write(null, c);
-		else {
-			Face face = new Face(f.getV1().getNegated(), f.getV2().getNegated(), f.getV3().getNegated(), f);
-			successor.write(face, c);
-		}
+		successor.write(process(f), c);
 	}
 
 	public Face read() {
-		// NOT IMPLEMENTED
-		return null;
+		return process(forerunner.read());
 	}
 
 	public Face process(Face f) {
-		// NOT IMPLEMENTED
-		return null;
+		if (f == null) return null;
+		else
+			return new Face(f.getV1().getNegated(), f.getV2().getNegated(), f.getV3().getNegated(), f);
 	}
 }

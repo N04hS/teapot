@@ -16,26 +16,35 @@ public class PullPipelineFactory {
         Source source = new Source();
         IFilter<Face> resize = new ResizeFilter(c);
         IFilter<Face> rotate = new RotationFilter(c);
-
+        IFilter<Face> view = new ViewTransformFilter(pd.getProjTransform());
+        IFilter<Face> angle = new AngleTransformFilter();
         IFilter<Face> move = new MoveFilter(pd.getViewWidth(), pd.getViewHeight());
         Sink sink = new Sink(pd);
 
         Pipe<Face> connectSourceResize = new Pipe<>();
         Pipe<Face> connectResizeRotate = new Pipe<>();
-        Pipe<Face> connectRotateSink = new Pipe<>();
+        Pipe<Face> connectRotateView = new Pipe<>();
+        Pipe<Face> connectViewAngle = new Pipe<>();
+        Pipe<Face> connectAngleMove = new Pipe<>();
+        Pipe<Face> connectMoveSink = new Pipe<>();
 
-        sink.setForerunner(connectRotateSink);
-        connectRotateSink.setIncoming(rotate);
+        sink.setForerunner(connectMoveSink);
+        connectMoveSink.setIncoming(move);
+
+        move.setForerunner(connectAngleMove);
+        connectAngleMove.setIncoming(angle);
+
+        angle.setForerunner(connectViewAngle);
+        connectViewAngle.setIncoming(view);
+
+        view.setForerunner(connectRotateView);
+        connectRotateView.setIncoming(rotate);
 
         rotate.setForerunner(connectResizeRotate);
         connectResizeRotate.setIncoming(resize);
 
         resize.setForerunner(connectSourceResize);
         connectSourceResize.setIncoming(source);
-
-//        Pipe<Face> connectSourceSink = new Pipe<>();
-//        sink.setForerunner(connectSourceSink);
-//        connectSourceSink.setIncoming(source);
 
         // TODO: pull from the source (model)
 
@@ -61,7 +70,7 @@ public class PullPipelineFactory {
         // TODO 7. feed into the sink (renderer)
 
         // returning an animation renderer which handles clearing of the
-        // viewport and computation of the praction
+        // viewport and computation of the fraction
         return new AnimationRenderer(pd) {
             // TODO rotation variable goes in here
             float elapsedTime = 0;

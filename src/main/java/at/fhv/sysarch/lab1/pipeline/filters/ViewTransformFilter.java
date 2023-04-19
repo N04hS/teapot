@@ -20,21 +20,17 @@ public class ViewTransformFilter implements IFilter<Face> {
 	public void setForerunner(Pipe pipe) { this.forerunner = pipe; }
 
 	public void write(Face f, Container c) {
-		if (f == null) successor.write(null, c);
-		else{
-			Face face = new Face(vp.multiply(f.getV1()), vp.multiply(f.getV2()), vp.multiply(f.getV3()), f);
-			successor.write(face, c);
-
-		}
+		successor.write(process(f), c);
 	}
 
 	public Face read() {
-		// NOT IMPLEMENTED
-		return null;
+		return process(forerunner.read());
 	}
 
 	public Face process(Face f) {
-		// NOT IMPLEMENTED
-		return null;
+		if (f == null)
+			return null;
+		else
+			return new Face(vp.multiply(f.getV1()), vp.multiply(f.getV2()), vp.multiply(f.getV3()), f);
 	}
 }

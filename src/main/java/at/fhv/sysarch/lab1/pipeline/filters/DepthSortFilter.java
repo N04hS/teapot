@@ -14,7 +14,7 @@ public class DepthSortFilter implements IFilter<Face> {
     private Pipe forerunner = null;
     private Container container = null;
     private static List<Face> allFaces = new ArrayList<>();
-    private int p;
+    private int p = 0;
 
     public void setSuccessor(Pipe pipe) { this.successor = pipe; }
     public void setForerunner(Pipe pipe) { this.forerunner = pipe; }
@@ -37,8 +37,8 @@ public class DepthSortFilter implements IFilter<Face> {
     }
 
     public Face read() {
-        if (p >= 0) {
-            return (Face) allFaces.toArray()[p--];
+        if (p > 0) {
+            return (Face) allFaces.toArray()[--p];
         }
         else {
             /* collect all faces */
@@ -49,13 +49,8 @@ public class DepthSortFilter implements IFilter<Face> {
                 f = (Face) forerunner.read();
             }
             /* sort all faces */
-            allFaces.sort(new Comparator<Face>() {
-                @Override
-                public int compare(Face f1, Face f2) {
-                    return Float.compare(((f1.getV1().getZ() + f1.getV2().getZ() +  f1.getV3().getZ()) / 3) -
-                            ((f2.getV1().getZ() + f2.getV2().getZ() +  f2.getV3().getZ()) / 3), 0f);
-                }
-            });
+            allFaces.sort((f1, f2) -> Float.compare(((f1.getV1().getZ() + f1.getV2().getZ() +  f1.getV3().getZ()) / 3) -
+                    ((f2.getV1().getZ() + f2.getV2().getZ() +  f2.getV3().getZ()) / 3), 0f));
 
             return read();
         }
