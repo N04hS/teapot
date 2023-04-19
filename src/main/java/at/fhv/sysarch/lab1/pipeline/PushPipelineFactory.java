@@ -15,7 +15,7 @@ public class PushPipelineFactory {
         Source source = new Source();
         IFilter<Face> resize = new ResizeFilter();
         IFilter<Face> backFaceCulling = new BackfaceCullingFilter(pd.getViewingEye());
-        IFilter<Face> rotate = new RotationFilter(c.rotMat);
+        IFilter<Face> rotate = new RotationFilter(c);
         IFilter<Face> depthSort = new DepthSortFilter();
         IFilter<Face> view = new ViewTransformFilter(pd.getProjTransform());
         IFilter<Face> move = new MoveFilter(pd.getViewWidth(), pd.getViewHeight());

@@ -15,7 +15,7 @@ public class PullPipelineFactory {
 
         Source source = new Source();
         IFilter<Face> resize = new ResizeFilter();
-        IFilter<Face> rotate = new RotationFilter(c.rotMat);
+        IFilter<Face> rotate = new RotationFilter(c);
         IFilter<Face> view = new ViewTransformFilter(pd.getProjTransform());
         IFilter<Face> angle = new AngleTransformFilter();
         IFilter<Face> move = new MoveFilter(pd.getViewWidth(), pd.getViewHeight());

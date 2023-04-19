@@ -9,12 +9,12 @@ import com.hackoeur.jglm.Mat4;
 public class RotationFilter implements IFilter<Face> {
 	private Pipe<Face> successor = null;
 	private Pipe<Face> forerunner = null;
-	private Mat4 rotMat = null;
+	private Container c = null;
 
 	public void setSuccessor(Pipe pipe) { this.successor = pipe; }
 	public void setForerunner(Pipe pipe) { this.forerunner = pipe; }
 
-	public RotationFilter(Mat4 rotationMatrix) { this.rotMat = rotationMatrix; }
+	public RotationFilter(Container c) { this.c = c; }
 
 	public void write(Face f) {
 		successor.write(process(f));
@@ -25,7 +25,7 @@ public class RotationFilter implements IFilter<Face> {
 	}
 
 	public Face process(Face f) {
-		Mat4 rM = rotMat;
+		Mat4 rM = c.rotMat;
 		if (f == null) return null;
 		else
 			return new Face(rM.multiply(f.getV1()), rM.multiply(f.getV2()), rM.multiply(f.getV3()),
