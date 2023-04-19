@@ -1,4 +1,4 @@
-package at.fhv.sysarch.lab1.pipeline.filters;
+package at.fhv.sysarch.lab1.pipeline.filters.base;
 
 import com.hackoeur.jglm.Mat4;
 

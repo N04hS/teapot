@@ -4,12 +4,39 @@ import at.fhv.sysarch.lab1.animation.AnimationRenderer;
 import at.fhv.sysarch.lab1.obj.Face;
 import at.fhv.sysarch.lab1.obj.Model;
 import at.fhv.sysarch.lab1.pipeline.filters.*;
+import at.fhv.sysarch.lab1.pipeline.filters.base.*;
 import at.fhv.sysarch.lab1.rendering.RenderingMode;
 import com.hackoeur.jglm.Matrices;
 import javafx.animation.AnimationTimer;
 
 public class PullPipelineFactory {
     public static AnimationTimer createPipeline(PipelineData pd) {
+        Container c = new Container();
+
+        Source source = new Source();
+        IFilter<Face> resize = new ResizeFilter(c);
+        IFilter<Face> rotate = new RotationFilter(c);
+
+        IFilter<Face> move = new MoveFilter(pd.getViewWidth(), pd.getViewHeight());
+        Sink sink = new Sink(pd);
+
+        Pipe<Face> connectSourceResize = new Pipe<>();
+        Pipe<Face> connectResizeRotate = new Pipe<>();
+        Pipe<Face> connectRotateSink = new Pipe<>();
+
+        sink.setForerunner(connectRotateSink);
+        connectRotateSink.setIncoming(rotate);
+
+        rotate.setForerunner(connectResizeRotate);
+        connectResizeRotate.setIncoming(resize);
+
+        resize.setForerunner(connectSourceResize);
+        connectSourceResize.setIncoming(source);
+
+//        Pipe<Face> connectSourceSink = new Pipe<>();
+//        sink.setForerunner(connectSourceSink);
+//        connectSourceSink.setIncoming(source);
+
         // TODO: pull from the source (model)
 
         // TODO 1. perform model-view transformation from model to VIEW SPACE coordinates
@@ -37,6 +64,7 @@ public class PullPipelineFactory {
         // viewport and computation of the praction
         return new AnimationRenderer(pd) {
             // TODO rotation variable goes in here
+            float elapsedTime = 0;
 
             /** This method is called for every frame from the JavaFX Animation
              * system (using an AnimationTimer, see AnimationRenderer). 
@@ -45,6 +73,15 @@ public class PullPipelineFactory {
              */
             @Override
             protected void render(float fraction, Model model) {
+                pd.getGraphicsContext().setStroke(pd.getModelColor());
+                pd.getGraphicsContext().setFill(pd.getModelColor());
+
+                float phi = (float) ((Math.PI*2*(elapsedTime+=fraction))/10);
+                c.rotMat = Matrices.rotate(-phi, pd.getModelRotAxis());
+                c.viewMat = pd.getViewTransform();
+
+                source.setModel(model);
+                sink.read();
                 // TODO compute rotation in radians
 
                 // TODO create new model rotation matrix using pd.getModelRotAxis and Matrices.rotate

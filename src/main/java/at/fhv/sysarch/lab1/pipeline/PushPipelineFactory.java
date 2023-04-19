@@ -4,15 +4,18 @@ import at.fhv.sysarch.lab1.animation.AnimationRenderer;
 import at.fhv.sysarch.lab1.obj.Face;
 import at.fhv.sysarch.lab1.obj.Model;
 import at.fhv.sysarch.lab1.pipeline.filters.*;
+import at.fhv.sysarch.lab1.pipeline.filters.base.*;
 import com.hackoeur.jglm.Matrices;
 import javafx.animation.AnimationTimer;
 
 public class PushPipelineFactory {
     public static AnimationTimer createPipeline(PipelineData pd) {
+        Container c = new Container();
+
         Source source = new Source();
-        IFilter<Face> resize = new ResizeFilter();
+        IFilter<Face> resize = new ResizeFilter(c);
         IFilter<Face> backFaceCulling = new BackfaceCullingFilter(pd.getViewingEye());
-        IFilter<Face> rotate = new RotationFilter();
+        IFilter<Face> rotate = new RotationFilter(c);
         IFilter<Face> depthSort = new DepthSortFilter();
         IFilter<Face> view = new ViewTransformFilter(pd.getProjTransform());
         IFilter<Face> move = new MoveFilter(pd.getViewWidth(), pd.getViewHeight());
@@ -79,7 +82,6 @@ public class PushPipelineFactory {
         // returning an animation renderer which handles clearing of the
         // viewport and computation of the praction
         return new AnimationRenderer(pd) {
-            private int pos = 0;
             // TODO rotation variable goes in here
             float elapsedTime = 0;
 
@@ -93,7 +95,6 @@ public class PushPipelineFactory {
                 pd.getGraphicsContext().setStroke(pd.getModelColor());
                 pd.getGraphicsContext().setFill(pd.getModelColor());
 
-                Container c = new Container();
                 float phi = (float) ((Math.PI*2*(elapsedTime+=fraction))/10);
                 c.rotMat = Matrices.rotate(-phi, pd.getModelRotAxis());
                 c.viewMat = pd.getViewTransform();
