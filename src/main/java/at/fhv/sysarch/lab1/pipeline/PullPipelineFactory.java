@@ -16,6 +16,7 @@ public class PullPipelineFactory {
         Source source = new Source();
         IFilter<Face> resize = new ResizeFilter();
         IFilter<Face> rotate = new RotationFilter(c);
+        IFilter<Face> backfaceCulling = new BackfaceCullingFilter(pd.getViewingEye());
         IFilter<Face> view = new ViewTransformFilter(pd.getProjTransform());
         IFilter<Face> angle = new AngleTransformFilter();
         IFilter<Face> move = new MoveFilter(pd.getViewWidth(), pd.getViewHeight());
@@ -23,7 +24,8 @@ public class PullPipelineFactory {
 
         Pipe<Face> connectSourceResize = new Pipe<>();
         Pipe<Face> connectResizeRotate = new Pipe<>();
-        Pipe<Face> connectRotateView = new Pipe<>();
+        Pipe<Face> connectRotateBackface = new Pipe<>();
+        Pipe<Face> connectBackfaceView = new Pipe<>();
         Pipe<Face> connectViewAngle = new Pipe<>();
         Pipe<Face> connectAngleMove = new Pipe<>();
         Pipe<Face> connectMoveSink = new Pipe<>();
@@ -37,8 +39,11 @@ public class PullPipelineFactory {
         angle.setForerunner(connectViewAngle);
         connectViewAngle.setIncoming(view);
 
-        view.setForerunner(connectRotateView);
-        connectRotateView.setIncoming(rotate);
+        view.setForerunner(connectBackfaceView);
+        connectBackfaceView.setIncoming(backfaceCulling);
+
+        backfaceCulling.setForerunner(connectRotateBackface);
+        connectRotateBackface.setIncoming(rotate);
 
         rotate.setForerunner(connectResizeRotate);
         connectResizeRotate.setIncoming(resize);

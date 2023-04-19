@@ -9,8 +9,6 @@ public class Pipe<T> {
 	}
 	public T read() { return incoming.read(); }
 
-	public void setOutgoing(IFilter<T> filter) {
-		outgoing = filter;
-	}
+	public void setOutgoing(IFilter<T> filter) { outgoing = filter;	}
 	public void setIncoming(IFilter<T> filter) { incoming = filter; }
 }
