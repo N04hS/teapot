@@ -29,7 +29,7 @@ public class Sink implements IFilter<Face> {
 		this.forerunner = pipe;
 	}
 
-	public void write(Face f, Container c) {
+	public void write(Face f) {
 		/* Flat shading */
 		Vec3 lightVec = light.subtract(f.getV1().toVec3()).getUnitVector();
 		double ratio = Math.max(0.0, lightVec.dot(f.getN1().toVec3().getUnitVector()));
@@ -63,7 +63,7 @@ public class Sink implements IFilter<Face> {
 	public Face read() {
 		Face f = forerunner.read();
 		while (f != null) {
-			write(f, null);
+			write(f);
 
 			f = forerunner.read();
 		}

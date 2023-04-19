@@ -10,16 +10,15 @@ import java.util.Comparator;
 import java.util.List;
 
 public class DepthSortFilter implements IFilter<Face> {
-    private Pipe successor = null;
-    private Pipe forerunner = null;
-    private Container container = null;
+    private Pipe<Face> successor = null;
+    private Pipe<Face> forerunner = null;
     private static List<Face> allFaces = new ArrayList<>();
     private int p = 0;
 
-    public void setSuccessor(Pipe pipe) { this.successor = pipe; }
-    public void setForerunner(Pipe pipe) { this.forerunner = pipe; }
+    public void setSuccessor(Pipe pipe) { successor = pipe; }
+    public void setForerunner(Pipe pipe) { forerunner = pipe; }
 
-    public void write(Face f, Container c) {
+    public void write(Face f) {
         if (f == null){
             allFaces.sort(new Comparator<Face>() {
                 @Override
@@ -29,7 +28,7 @@ public class DepthSortFilter implements IFilter<Face> {
                             0f);
                 }
             });
-            allFaces.forEach(face -> successor.write(face, c));
+            allFaces.forEach(face -> successor.write(face));
             allFaces.clear();
         } else {
             allFaces.add(f);

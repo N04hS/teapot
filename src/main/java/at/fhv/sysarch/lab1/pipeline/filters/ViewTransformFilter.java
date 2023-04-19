@@ -19,8 +19,8 @@ public class ViewTransformFilter implements IFilter<Face> {
 	}
 	public void setForerunner(Pipe pipe) { this.forerunner = pipe; }
 
-	public void write(Face f, Container c) {
-		successor.write(process(f), c);
+	public void write(Face f) {
+		successor.write(process(f));
 	}
 
 	public Face read() {

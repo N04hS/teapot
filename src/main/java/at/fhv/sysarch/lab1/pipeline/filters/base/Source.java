@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Source implements IFilter<Face> {
-	private Pipe successor = null;
+	private Pipe<Face> successor = null;
 	private List<Face> allFaces = new ArrayList<>();
 	private int p;
 
@@ -24,13 +24,13 @@ public class Source implements IFilter<Face> {
 		p = 0;
 	}
 
-	public void write(Model model, Container c) {
+	public void write(Model model) {
 		// TODO: call next filter
-		model.getFaces().forEach(f -> this.successor.write(f, c));
-		this.successor.write(null, c); /*separate each render call*/
+		model.getFaces().forEach(f -> successor.write(f));
+		successor.write(null); /*separate each render call*/
 	}
 
-	public void write(Face f, Container c) {
+	public void write(Face f) {
 		// NOT IMPLEMENTED
 	}
 

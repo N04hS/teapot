@@ -4,7 +4,7 @@ public interface IFilter<T> {
 	void setSuccessor(Pipe pipe);
 	void setForerunner(Pipe pipe);
 
-	void write(T input, Container c);
+	void write(T input);
 	T read();
 	T process(T input);
 }

@@ -13,9 +13,9 @@ public class PushPipelineFactory {
         Container c = new Container();
 
         Source source = new Source();
-        IFilter<Face> resize = new ResizeFilter(c);
+        IFilter<Face> resize = new ResizeFilter();
         IFilter<Face> backFaceCulling = new BackfaceCullingFilter(pd.getViewingEye());
-        IFilter<Face> rotate = new RotationFilter(c);
+        IFilter<Face> rotate = new RotationFilter(c.rotMat);
         IFilter<Face> depthSort = new DepthSortFilter();
         IFilter<Face> view = new ViewTransformFilter(pd.getProjTransform());
         IFilter<Face> move = new MoveFilter(pd.getViewWidth(), pd.getViewHeight());
@@ -97,9 +97,8 @@ public class PushPipelineFactory {
 
                 float phi = (float) ((Math.PI*2*(elapsedTime+=fraction))/10);
                 c.rotMat = Matrices.rotate(-phi, pd.getModelRotAxis());
-                c.viewMat = pd.getViewTransform();
 
-                source.write(model, c);
+                source.write(model);
                 // TODO compute rotation in radians
 
                 // TODO create new model rotation matrix using pd.modelRotAxis

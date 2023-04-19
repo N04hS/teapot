@@ -14,8 +14,8 @@ public class PullPipelineFactory {
         Container c = new Container();
 
         Source source = new Source();
-        IFilter<Face> resize = new ResizeFilter(c);
-        IFilter<Face> rotate = new RotationFilter(c);
+        IFilter<Face> resize = new ResizeFilter();
+        IFilter<Face> rotate = new RotationFilter(c.rotMat);
         IFilter<Face> view = new ViewTransformFilter(pd.getProjTransform());
         IFilter<Face> angle = new AngleTransformFilter();
         IFilter<Face> move = new MoveFilter(pd.getViewWidth(), pd.getViewHeight());
@@ -87,7 +87,6 @@ public class PullPipelineFactory {
 
                 float phi = (float) ((Math.PI*2*(elapsedTime+=fraction))/10);
                 c.rotMat = Matrices.rotate(-phi, pd.getModelRotAxis());
-                c.viewMat = pd.getViewTransform();
 
                 source.setModel(model);
                 sink.read();

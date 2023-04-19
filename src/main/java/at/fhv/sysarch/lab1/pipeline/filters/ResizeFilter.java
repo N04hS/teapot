@@ -6,25 +6,20 @@ import at.fhv.sysarch.lab1.pipeline.filters.base.IFilter;
 import at.fhv.sysarch.lab1.pipeline.filters.base.Pipe;
 
 public class ResizeFilter implements IFilter<Face> {
-	private Pipe successor = null;
-	private Pipe forerunner = null;
-	// Container could be deleted everywhere except in filters where its needed
-	// last step after pullpipeline works
-	private Container container = null;
+	private Pipe<Face> successor = null;
+	private Pipe<Face> forerunner = null;
 
 	public void setSuccessor(Pipe pipe) {
 		successor = pipe;
 	}
 	public void setForerunner(Pipe pipe) { forerunner = pipe; }
 
-	public ResizeFilter(Container c) { container = c; }
-
-	public void write(Face f, Container c) {
-		successor.write(process(f), c);
+	public void write(Face f) {
+		successor.write(process(f));
 	}
 
 	public Face read() {
-		return process((Face) forerunner.read());
+		return process(forerunner.read());
 	}
 
 	public Face process(Face f) {
