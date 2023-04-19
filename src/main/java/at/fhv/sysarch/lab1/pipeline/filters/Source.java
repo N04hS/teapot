@@ -10,13 +10,13 @@ import java.util.List;
 
 public class Source implements IFilter<Face> {
 	private Pipe<Face> successor = null;
-	private List<Face> allFaces = new ArrayList<>();
+	private final List<Face> allFaces = new ArrayList<>();
 	private int p;
 
 	public void setSuccessor(Pipe pipe) {
 		this.successor = pipe;
 	}
-	public void setForerunner(Pipe pipe) {
+	public void setPredecessor(Pipe pipe) {
 		// NOT IMPLEMENTED
 	}
 

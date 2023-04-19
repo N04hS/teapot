@@ -8,11 +8,11 @@ import com.hackoeur.jglm.Mat4;
 
 public class RotationFilter implements IFilter<Face> {
 	private Pipe<Face> successor = null;
-	private Pipe<Face> forerunner = null;
+	private Pipe<Face> predecessor = null;
 	private final Container c;
 
 	public void setSuccessor(Pipe pipe) { this.successor = pipe; }
-	public void setForerunner(Pipe pipe) { this.forerunner = pipe; }
+	public void setPredecessor(Pipe pipe) { this.predecessor = pipe; }
 
 	public RotationFilter(Container c) { this.c = c; }
 
@@ -21,7 +21,7 @@ public class RotationFilter implements IFilter<Face> {
 	}
 
 	public Face read() {
-		return process(forerunner.read());
+		return process(predecessor.read());
 	}
 
 	public Face process(Face f) {

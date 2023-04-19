@@ -1,14 +1,13 @@
 package at.fhv.sysarch.lab1.pipeline.filters;
 
 import at.fhv.sysarch.lab1.obj.Face;
-import at.fhv.sysarch.lab1.pipeline.filters.base.Container;
 import at.fhv.sysarch.lab1.pipeline.filters.base.IFilter;
 import at.fhv.sysarch.lab1.pipeline.filters.base.Pipe;
 import com.hackoeur.jglm.Vec4;
 
 public class MoveFilter implements IFilter<Face> {
     private Pipe<Face> successor = null;
-    private Pipe<Face> forerunner = null;
+    private Pipe<Face> predecessor = null;
 
     private final int deltaX;
     private final int deltaY;
@@ -19,14 +18,14 @@ public class MoveFilter implements IFilter<Face> {
     }
 
     public void setSuccessor(Pipe pipe) { this.successor = pipe; }
-    public void setForerunner(Pipe pipe) { this.forerunner = pipe; }
+    public void setPredecessor(Pipe pipe) { this.predecessor = pipe; }
 
     public void write(Face f) {
         successor.write(process(f));
     }
 
     public Face read() {
-        return process(forerunner.read());
+        return process(predecessor.read());
     }
 
     private Face process(Face f) {

@@ -40,35 +40,35 @@ public class PullPipelineFactory {
         Pipe<Face> connectAngleMove = new Pipe<>();
         Pipe<Face> connectMoveSink = new Pipe<>();
 
-        sink.setForerunner(connectMoveSink);
+        sink.setPredecessor(connectMoveSink);
         connectMoveSink.setIncoming(move);
 
-        move.setForerunner(connectAngleMove);
+        move.setPredecessor(connectAngleMove);
         connectAngleMove.setIncoming(angle);
 
-        angle.setForerunner(connectViewAngle);
+        angle.setPredecessor(connectViewAngle);
         connectViewAngle.setIncoming(view);
 
-        view.setForerunner(connectBackfaceView);
+        view.setPredecessor(connectBackfaceView);
         connectBackfaceView.setIncoming(backfaceCulling);
 
-        backfaceCulling.setForerunner(connectRotateBackface);
+        backfaceCulling.setPredecessor(connectRotateBackface);
         connectRotateBackface.setIncoming(rotate);
 
-        rotate.setForerunner(connectResizeRotate);
+        rotate.setPredecessor(connectResizeRotate);
         connectResizeRotate.setIncoming(resize);
 
-        resize.setForerunner(connectSourceResize);
+        resize.setPredecessor(connectSourceResize);
         connectSourceResize.setIncoming(source);
 
         /* comment following code out to remove depthsort from pipeline */
         Pipe<Face> connectBackfaceDepthsort = new Pipe<>();
         Pipe<Face> connectDepthsortView = new Pipe<>();
 
-        view.setForerunner(connectDepthsortView);
+        view.setPredecessor(connectDepthsortView);
         connectDepthsortView.setIncoming(depthsort);
 
-        depthsort.setForerunner(connectBackfaceDepthsort);
+        depthsort.setPredecessor(connectBackfaceDepthsort);
         connectBackfaceDepthsort.setIncoming(backfaceCulling);
 
         // TODO: pull from the source (model)

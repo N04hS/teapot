@@ -7,7 +7,7 @@ import com.hackoeur.jglm.Vec3;
 
 public class BackfaceCullingFilter implements IFilter<Face> {
     private Pipe<Face> successor = null;
-    private Pipe<Face> forerunner = null;
+    private Pipe<Face> predecessor = null;
     private final Vec3 camera;
 
     public BackfaceCullingFilter(Vec3 camera){
@@ -17,8 +17,8 @@ public class BackfaceCullingFilter implements IFilter<Face> {
     public void setSuccessor(Pipe pipe) {
         successor = pipe;
     }
-    public void setForerunner(Pipe pipe) {
-        forerunner = pipe;
+    public void setPredecessor(Pipe pipe) {
+        predecessor = pipe;
     }
 
     public void write(Face f) {
@@ -30,7 +30,7 @@ public class BackfaceCullingFilter implements IFilter<Face> {
     }
 
     public Face read() {
-        Face in = forerunner.read();
+        Face in = predecessor.read();
 
         Face processed = process(in);
 
@@ -38,7 +38,7 @@ public class BackfaceCullingFilter implements IFilter<Face> {
             return null;
 
         while (processed.getV1() == null) {
-            processed = process(forerunner.read());
+            processed = process(predecessor.read());
             if (processed == null)
                 return null;
         }

@@ -10,7 +10,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Sink implements IFilter<Face> {
-	private Pipe<Face> forerunner = null;
+	private Pipe<Face> predecessor = null;
+
 	private final GraphicsContext gc;
 	private final RenderingMode rm;
 	private final Vec3 light;
@@ -26,8 +27,8 @@ public class Sink implements IFilter<Face> {
 	public void setSuccessor(Pipe pipe) {
 		// NOT IMPLEMENTED
 	}
-	public void setForerunner(Pipe pipe) {
-		forerunner = pipe;
+	public void setPredecessor(Pipe pipe) {
+		predecessor = pipe;
 	}
 
 	public void write(Face f) {
@@ -57,11 +58,11 @@ public class Sink implements IFilter<Face> {
 	}
 
 	public Face read() {
-		Face f = forerunner.read();
+		Face f = predecessor.read();
 		while (f != null) {
 			write(f);
 
-			f = forerunner.read();
+			f = predecessor.read();
 		}
 
 		return null;
