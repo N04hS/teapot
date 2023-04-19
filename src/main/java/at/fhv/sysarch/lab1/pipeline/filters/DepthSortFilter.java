@@ -20,14 +20,9 @@ public class DepthSortFilter implements IFilter<Face> {
 
     public void write(Face f) {
         if (f == null){
-            allFaces.sort(new Comparator<Face>() {
-                @Override
-                public int compare(Face f1, Face f2) {
-                    return Float.compare(((f1.getV1().getZ() + f1.getV2().getZ() +  f1.getV3().getZ()) / 3) -
-                            ((f2.getV1().getZ() + f2.getV2().getZ() +  f2.getV3().getZ()) / 3),
-                            0f);
-                }
-            });
+            allFaces.sort((f1, f2) -> Float.compare(((f1.getV1().getZ() + f1.getV2().getZ() +  f1.getV3().getZ()) / 3) -
+                    ((f2.getV1().getZ() + f2.getV2().getZ() +  f2.getV3().getZ()) / 3),
+                    0f));
             allFaces.forEach(face -> successor.write(face));
             allFaces.clear();
         } else {
@@ -41,11 +36,11 @@ public class DepthSortFilter implements IFilter<Face> {
         }
         else {
             /* collect all faces */
-            Face f = (Face) forerunner.read();
+            Face f = forerunner.read();
             while (f != null) {
                 allFaces.add(f);
                 p++;
-                f = (Face) forerunner.read();
+                f = forerunner.read();
             }
             /* sort all faces */
             allFaces.sort((f1, f2) -> Float.compare(((f1.getV1().getZ() + f1.getV2().getZ() +  f1.getV3().getZ()) / 3) -

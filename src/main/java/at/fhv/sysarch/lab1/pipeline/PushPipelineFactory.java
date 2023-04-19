@@ -26,7 +26,7 @@ public class PushPipelineFactory {
         Pipe<Face> connectResizeRotate = new Pipe<>();
         Pipe<Face> connectBackFaceCulling = new Pipe<>();
         Pipe<Face> connectDepthSort = new Pipe<>();
-        Pipe<Face> connectRotateView = new Pipe<>();
+        Pipe<Face> connectDepthSortView = new Pipe<>();
         Pipe<Face> connectViewAngle = new Pipe<>();
         Pipe<Face> connectAngleMove = new Pipe<>();
         Pipe<Face> connectMoveSink = new Pipe<>();
@@ -43,9 +43,9 @@ public class PushPipelineFactory {
         backFaceCulling.setSuccessor(connectDepthSort);
 
         connectDepthSort.setOutgoing(depthSort);
-        depthSort.setSuccessor(connectRotateView);
+        depthSort.setSuccessor(connectDepthSortView);
 
-        connectRotateView.setOutgoing(view);
+        connectDepthSortView.setOutgoing(view);
         view.setSuccessor(connectViewAngle);
 
         connectViewAngle.setOutgoing(angle);

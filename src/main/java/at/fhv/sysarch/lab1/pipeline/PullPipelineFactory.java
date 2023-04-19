@@ -11,12 +11,23 @@ import javafx.animation.AnimationTimer;
 
 public class PullPipelineFactory {
     public static AnimationTimer createPipeline(PipelineData pd) {
+        /*
+        resize
+        rotate
+        backface culling
+        depthsorting
+        viewtransform
+        angletransform
+        move
+         */
+
         Container c = new Container();
 
         Source source = new Source();
         IFilter<Face> resize = new ResizeFilter();
         IFilter<Face> rotate = new RotationFilter(c);
         IFilter<Face> backfaceCulling = new BackfaceCullingFilter(pd.getViewingEye());
+        IFilter<Face> depthsort = new DepthSortFilter();
         IFilter<Face> view = new ViewTransformFilter(pd.getProjTransform());
         IFilter<Face> angle = new AngleTransformFilter();
         IFilter<Face> move = new MoveFilter(pd.getViewWidth(), pd.getViewHeight());
@@ -50,6 +61,16 @@ public class PullPipelineFactory {
 
         resize.setForerunner(connectSourceResize);
         connectSourceResize.setIncoming(source);
+
+        /* comment following code out to remove depthsort from pipeline */
+        Pipe<Face> connectBackfaceDepthsort = new Pipe<>();
+        Pipe<Face> connectDepthsortView = new Pipe<>();
+
+        view.setForerunner(connectDepthsortView);
+        connectDepthsortView.setIncoming(depthsort);
+
+        depthsort.setForerunner(connectBackfaceDepthsort);
+        connectBackfaceDepthsort.setIncoming(backfaceCulling);
 
         // TODO: pull from the source (model)
 
