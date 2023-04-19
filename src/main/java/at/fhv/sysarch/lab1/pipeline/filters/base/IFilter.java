@@ -6,5 +6,4 @@ public interface IFilter<T> {
 
 	void write(T input);
 	T read();
-	T process(T input);
 }

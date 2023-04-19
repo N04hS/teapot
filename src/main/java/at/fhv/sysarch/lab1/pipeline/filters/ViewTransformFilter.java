@@ -14,10 +14,11 @@ public class ViewTransformFilter implements IFilter<Face> {
 	public ViewTransformFilter(Mat4 viewProj){
 		vp = viewProj;
 	}
+
 	public void setSuccessor(Pipe pipe) {
-		this.successor = pipe;
+		successor = pipe;
 	}
-	public void setForerunner(Pipe pipe) { this.forerunner = pipe; }
+	public void setForerunner(Pipe pipe) { forerunner = pipe; }
 
 	public void write(Face f) {
 		successor.write(process(f));
@@ -27,7 +28,7 @@ public class ViewTransformFilter implements IFilter<Face> {
 		return process(forerunner.read());
 	}
 
-	public Face process(Face f) {
+	private Face process(Face f) {
 		if (f == null)
 			return null;
 		else

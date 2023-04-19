@@ -29,8 +29,9 @@ public class MoveFilter implements IFilter<Face> {
         return process(forerunner.read());
     }
 
-    public Face process(Face f) {
-        if (f == null) return null;
+    private Face process(Face f) {
+        if (f == null)
+            return null;
         else
             return new Face(
                     f.getV1().add(new Vec4(deltaX, deltaY, 0, 0)),

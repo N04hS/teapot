@@ -1,7 +1,6 @@
 package at.fhv.sysarch.lab1.pipeline.filters;
 
 import at.fhv.sysarch.lab1.obj.Face;
-import at.fhv.sysarch.lab1.pipeline.filters.base.Container;
 import at.fhv.sysarch.lab1.pipeline.filters.base.IFilter;
 import at.fhv.sysarch.lab1.pipeline.filters.base.Pipe;
 import com.hackoeur.jglm.Vec3;
@@ -47,7 +46,7 @@ public class BackfaceCullingFilter implements IFilter<Face> {
         return processed;
     }
 
-    public Face process(Face f) {
+    private Face process(Face f) {
         if (f == null)
             return null;
         else {

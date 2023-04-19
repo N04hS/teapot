@@ -34,11 +34,9 @@ public class DepthSortFilter implements IFilter<Face> {
         if (p > 0) {
             p--;
             return allFaces.remove(0);
-//            return allFaces.get(--p);
         }
         else {
             /* collect all faces */
-            allFaces.clear();
             p=0;
             Face f = forerunner.read();
             while (f != null) {
@@ -50,15 +48,11 @@ public class DepthSortFilter implements IFilter<Face> {
             allFaces.sort((f1, f2) -> Float.compare(((f1.getV1().getZ() + f1.getV2().getZ() +  f1.getV3().getZ()) / 3) -
                     ((f2.getV1().getZ() + f2.getV2().getZ() +  f2.getV3().getZ()) / 3), 0f));
 
+            /* add null face as end of frame marker */
             allFaces.add(f);
             p++;
 
             return read();
         }
-    }
-
-    public Face process(Face f) {
-        // NOT IMPLEMENTED
-        return null;
     }
 }

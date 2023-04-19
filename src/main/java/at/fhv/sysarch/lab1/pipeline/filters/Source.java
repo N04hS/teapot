@@ -44,9 +44,4 @@ public class Source implements IFilter<Face> {
 
 		return allFaces.get(p++);
 	}
-
-	public Face process(Face f) {
-		// NOT IMPLEMENTED
-		return null;
-	}
 }

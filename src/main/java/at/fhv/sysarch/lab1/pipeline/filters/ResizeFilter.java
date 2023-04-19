@@ -22,9 +22,10 @@ public class ResizeFilter implements IFilter<Face> {
 		return process(forerunner.read());
 	}
 
-	public Face process(Face f) {
-		if (f == null) return null;
-
-		return new Face(f.getV1().multiply(100), f.getV2().multiply(100), f.getV3().multiply(100), f.getN1(), f.getN2(), f.getN3());
+	private Face process(Face f) {
+		if (f == null)
+			return null;
+		else
+			return new Face(f.getV1().multiply(100), f.getV2().multiply(100), f.getV3().multiply(100), f.getN1(), f.getN2(), f.getN3());
 	}
 }

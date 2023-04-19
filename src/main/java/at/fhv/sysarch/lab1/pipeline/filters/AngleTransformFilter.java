@@ -1,7 +1,6 @@
 package at.fhv.sysarch.lab1.pipeline.filters;
 
 import at.fhv.sysarch.lab1.obj.Face;
-import at.fhv.sysarch.lab1.pipeline.filters.base.Container;
 import at.fhv.sysarch.lab1.pipeline.filters.base.IFilter;
 import at.fhv.sysarch.lab1.pipeline.filters.base.Pipe;
 
@@ -20,8 +19,9 @@ public class AngleTransformFilter implements IFilter<Face> {
 		return process(forerunner.read());
 	}
 
-	public Face process(Face f) {
-		if (f == null) return null;
+	private Face process(Face f) {
+		if (f == null)
+			return null;
 		else
 			return new Face(f.getV1().getNegated(), f.getV2().getNegated(), f.getV3().getNegated(), f);
 	}

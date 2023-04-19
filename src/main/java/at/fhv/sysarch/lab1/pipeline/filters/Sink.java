@@ -26,9 +26,8 @@ public class Sink implements IFilter<Face> {
 	public void setSuccessor(Pipe pipe) {
 		// NOT IMPLEMENTED
 	}
-
 	public void setForerunner(Pipe pipe) {
-		this.forerunner = pipe;
+		forerunner = pipe;
 	}
 
 	public void write(Face f) {
@@ -55,11 +54,6 @@ public class Sink implements IFilter<Face> {
 				gc.strokeLine(f.getV2().getX(), f.getV2().getY(), f.getV3().getX(), f.getV3().getY());
 			}
 		}
-	}
-
-	public Face process(Face f) {
-		// NOT IMPLEMENTED
-		return null;
 	}
 
 	public Face read() {
