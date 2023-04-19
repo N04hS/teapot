@@ -62,14 +62,14 @@ public class PullPipelineFactory {
         connectSourceResize.setIncoming(source);
 
         /* comment following code out to remove depthsort from pipeline */
-//        Pipe<Face> connectBackfaceDepthsort = new Pipe<>();
-//        Pipe<Face> connectDepthsortView = new Pipe<>();
-//
-//        view.setForerunner(connectDepthsortView);
-//        connectDepthsortView.setIncoming(depthsort);
-//
-//        depthsort.setForerunner(connectBackfaceDepthsort);
-//        connectBackfaceDepthsort.setIncoming(backfaceCulling);
+        Pipe<Face> connectBackfaceDepthsort = new Pipe<>();
+        Pipe<Face> connectDepthsortView = new Pipe<>();
+
+        view.setForerunner(connectDepthsortView);
+        connectDepthsortView.setIncoming(depthsort);
+
+        depthsort.setForerunner(connectBackfaceDepthsort);
+        connectBackfaceDepthsort.setIncoming(backfaceCulling);
 
         // TODO: pull from the source (model)
 
