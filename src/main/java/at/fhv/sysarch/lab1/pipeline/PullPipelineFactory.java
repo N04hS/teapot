@@ -10,16 +10,6 @@ import javafx.animation.AnimationTimer;
 
 public class PullPipelineFactory {
     public static AnimationTimer createPipeline(PipelineData pd) {
-        /*
-        resize
-        rotate
-        backface culling
-        depthsorting
-        viewtransform
-        angletransform
-        move
-         */
-
         Container c = new Container();
 
         Source source = new Source();
@@ -35,7 +25,8 @@ public class PullPipelineFactory {
         Pipe<Face> connectSourceResize = new Pipe<>();
         Pipe<Face> connectResizeRotate = new Pipe<>();
         Pipe<Face> connectRotateBackface = new Pipe<>();
-        Pipe<Face> connectBackfaceView = new Pipe<>();
+        Pipe<Face> connectBackfaceDepthsort = new Pipe<>();
+        Pipe<Face> connectDepthsortView = new Pipe<>();
         Pipe<Face> connectViewAngle = new Pipe<>();
         Pipe<Face> connectAngleMove = new Pipe<>();
         Pipe<Face> connectMoveSink = new Pipe<>();
@@ -49,8 +40,11 @@ public class PullPipelineFactory {
         angle.setPredecessor(connectViewAngle);
         connectViewAngle.setIncoming(view);
 
-        view.setPredecessor(connectBackfaceView);
-        connectBackfaceView.setIncoming(backfaceCulling);
+        view.setPredecessor(connectDepthsortView);
+        connectDepthsortView.setIncoming(depthsort);
+
+        depthsort.setPredecessor(connectBackfaceDepthsort);
+        connectBackfaceDepthsort.setIncoming(backfaceCulling);
 
         backfaceCulling.setPredecessor(connectRotateBackface);
         connectRotateBackface.setIncoming(rotate);
@@ -60,16 +54,6 @@ public class PullPipelineFactory {
 
         resize.setPredecessor(connectSourceResize);
         connectSourceResize.setIncoming(source);
-
-        /* comment following code out to remove depthsort from pipeline */
-        Pipe<Face> connectBackfaceDepthsort = new Pipe<>();
-        Pipe<Face> connectDepthsortView = new Pipe<>();
-
-        view.setPredecessor(connectDepthsortView);
-        connectDepthsortView.setIncoming(depthsort);
-
-        depthsort.setPredecessor(connectBackfaceDepthsort);
-        connectBackfaceDepthsort.setIncoming(backfaceCulling);
 
         // TODO: pull from the source (model)
 
