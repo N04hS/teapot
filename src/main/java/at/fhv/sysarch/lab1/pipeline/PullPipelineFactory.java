@@ -5,7 +5,6 @@ import at.fhv.sysarch.lab1.obj.Face;
 import at.fhv.sysarch.lab1.obj.Model;
 import at.fhv.sysarch.lab1.pipeline.filters.*;
 import at.fhv.sysarch.lab1.pipeline.filters.base.*;
-import at.fhv.sysarch.lab1.rendering.RenderingMode;
 import com.hackoeur.jglm.Matrices;
 import javafx.animation.AnimationTimer;
 
@@ -63,14 +62,14 @@ public class PullPipelineFactory {
         connectSourceResize.setIncoming(source);
 
         /* comment following code out to remove depthsort from pipeline */
-        Pipe<Face> connectBackfaceDepthsort = new Pipe<>();
-        Pipe<Face> connectDepthsortView = new Pipe<>();
-
-        view.setForerunner(connectDepthsortView);
-        connectDepthsortView.setIncoming(depthsort);
-
-        depthsort.setForerunner(connectBackfaceDepthsort);
-        connectBackfaceDepthsort.setIncoming(backfaceCulling);
+//        Pipe<Face> connectBackfaceDepthsort = new Pipe<>();
+//        Pipe<Face> connectDepthsortView = new Pipe<>();
+//
+//        view.setForerunner(connectDepthsortView);
+//        connectDepthsortView.setIncoming(depthsort);
+//
+//        depthsort.setForerunner(connectBackfaceDepthsort);
+//        connectBackfaceDepthsort.setIncoming(backfaceCulling);
 
         // TODO: pull from the source (model)
 

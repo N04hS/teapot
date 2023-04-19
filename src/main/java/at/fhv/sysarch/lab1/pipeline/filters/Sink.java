@@ -1,7 +1,9 @@
-package at.fhv.sysarch.lab1.pipeline.filters.base;
+package at.fhv.sysarch.lab1.pipeline.filters;
 
 import at.fhv.sysarch.lab1.obj.Face;
 import at.fhv.sysarch.lab1.pipeline.PipelineData;
+import at.fhv.sysarch.lab1.pipeline.filters.base.IFilter;
+import at.fhv.sysarch.lab1.pipeline.filters.base.Pipe;
 import at.fhv.sysarch.lab1.rendering.RenderingMode;
 import com.hackoeur.jglm.Vec3;
 import javafx.scene.canvas.GraphicsContext;
